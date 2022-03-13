@@ -111,11 +111,13 @@ def get_key(val):
 #FIND LEVELS
 lev_lay = str(input("Enter name of layer used to specify level line: "))
 def extract_levels(lev_lay_input: str, start_point: int, end_point: int):
+    '''
     for i in acad.iter_objects_fast(object_name_or_list="Text"):
         #" ' " CONDITION MIGHT CREATE PROBLEM
         #CREATE LIST OF LEVEL NOMENCLATURE
         if i.Layer == lev_lay and "'" in i.TextString and i.InsertionPoint[0] > sp and i.InsertionPoint[0] <= ep:
             print(i.TextString)
+    '''
     levels_y = []
     for i in acad.iter_objects_fast(object_name_or_list=["AcDbLine", "AcDbPolyLine"]):
         if i.Layer == lev_lay and i.StartPoint[0] > sp and i.EndPoint[0] <= ep:

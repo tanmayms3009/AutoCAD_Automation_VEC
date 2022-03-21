@@ -44,13 +44,15 @@ def set_attributes(attr_dict: dict, ip_dict : dict):
         name = entity.EntityName
         if name == 'AcDbBlockReference':
             HasAttributes = entity.HasAttributes
-            if HasAttributes and entity.InsertionPoint[0] in ip_dict.keys():
+            fetch_key = entity.InsertionPoint[0] + entity.InsertionPoint[1]
+            if HasAttributes and fetch_key in ip_dict.keys():
                 for attrib in entity.GetAttributes():
                     if attrib.TagString == 'DWG_NO':
-                        attrib.TextString = attr_dict[ip_dict[entity.InsertionPoint[0]]][0]
+                        attrib.TextString = attr_dict[ip_dict[fetch_key]][0]
                     elif attrib.TagString == 'ELEMENT_NAME':
-                        attrib.TextString = ip_dict[entity.InsertionPoint[0]]                    
+                        attrib.TextString = ip_dict[fetch_key]                    
                     print("  {}: {}".format(attrib.TagString, attrib.TextString))
+
 
 def insert_tags(size_dict: dict, blocks_dict: dict, attr_dict: dict):
     ip_to_block = {}
@@ -60,11 +62,10 @@ def insert_tags(size_dict: dict, blocks_dict: dict, attr_dict: dict):
             x = i.InsertionPoint[0] + size_dict[i.Name][0]/2
             y = i.InsertionPoint[1] + size_dict[i.Name][1]/2
             ip = [x, y, 0]
-            if ip[0] not in ip_to_block.keys():
-                ip_to_block[ip[0]] = i.Name
-            else:
-                k1 = ip[0] + 1
-                ip_to_block[k1] = i.Name
+            ip_k1 = ip[0] + ip[1]
+            if ip_k1 not in ip_to_block.keys():
+                ip_to_block[ip_k1] = i.Name
+
 
             print(acad.model.InsertBlock(APoint(ip), blocks_dict['tags'].Name, 1, 1, 1, 0))
         except Exception as e:
